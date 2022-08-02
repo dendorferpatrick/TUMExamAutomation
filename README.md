@@ -41,8 +41,7 @@ You can still interact with the browser.
 
 
 You can also combine multiple commands in one line. Here are some examples:  
-```
-s2 m You are missing FC layer```: Sets score, adds comments, and save exam  
+```s2 m You are missing FC layer```: Sets score, adds comments, and save exam  
 ```e4 s1```: Changes to subproblem 4 and sets score to 1  
 ```n2 m Batch size missing```: Set score, adds comments and move to next subproblem  
 
