@@ -19,11 +19,11 @@ from selenium.webdriver.common.alert import Alert
 
 
 
-# HERE COME YOUR PERSONAL SETTING
+# HERE COME YOUR PERSONAL SETTINGS
 USERNAME: str ="ge73vow" # TUM user name
-PASSWORD: str = "" # TUM password
-PROBLEM: int = 5 # Your problem
-SUBPROBLEMS: List[int] = [1,2, 3] # initial subproblem
+PASSWORD: str =  # TUM password
+PROBLEM: int =  # Your problem
+SUBPROBLEMS: List[int] = [] # initial subproblem
 
 class Correction():
     def __init__(self, username: str = USERNAME, 
@@ -113,7 +113,7 @@ class Correction():
 
     def set_subproblem(self, subproblem):
         self.subproblem = subproblem
-        print(f"Set suproblem to {subproblem}")
+        print(f"Set subproblem to {subproblem}")
 
     def next_page(self):
         element = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, f'//div[@id="slideRight"]')))
