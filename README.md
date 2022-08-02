@@ -27,12 +27,16 @@ Now filter the problems and select the first exam you want to work on. Please ma
 Now type in ```start``` into the command line. You can now start with the correction using the commands below. 
 You can still interact with the browser.
 
+Please make sure to double check your inputs and first exams when you start working with this script.
+
 
 ```s``` : saves current exam and skips to next exam  
 ```m <COMMENT>```: Include comment for subproblem  
 ```e<SUBPROBLEM_NUMBER: int>```: Change to subproblem with number <SUBPROBLEM_NUMBER>  
+
 ```<SCORE: int>```: Set score for current subproblem  
-```s<Score: int>```: set score for current subproblem and save exam  
+```s<Score: int>```: set score for current subproblem and save exam. 
+#### IMPORTANT: Scores are in terms of positions in the checkbox. So the real score is SCORE * 0.5 or depending on the score steps in the score checkbox
 ```n<Score: int>```: Set score for current subproblem and move to next subproblem from list of subproblems. If already at last subproblem, current exam is saved and next exam is opened.   
 ```f```: Forward to next   
 ```p0``` : previous page  
@@ -41,8 +45,7 @@ You can still interact with the browser.
 
 
 You can also combine multiple commands in one line. Here are some examples:  
-```
-s2 m You are missing FC layer```: Sets score, adds comments, and save exam  
+```s2 m You are missing FC layer```: Sets score, adds comments, and saves exam  
 ```e4 s1```: Changes to subproblem 4 and sets score to 1  
 ```n2 m Batch size missing```: Set score, adds comments and move to next subproblem  
 
