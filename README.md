@@ -43,6 +43,7 @@ Please make sure to double check your inputs and first exams when you start work
 ```p1```: next page  
 ```c```: Close browser and program  
 
+Press ```ENTER``` after typing the command to confirm your input.
 
 You can also combine multiple commands in one line. Here are some examples:  
 ```s2 m You are missing FC layer```: Sets score, adds comments, and saves exam  
