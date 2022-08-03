@@ -21,9 +21,9 @@ from selenium.webdriver.common.alert import Alert
 
 # HERE COME YOUR PERSONAL SETTINGS
 USERNAME: str ="ge73vow" # TUM user name
-PASSWORD: str =  # TUM password
-PROBLEM: int =  # Your problem
-SUBPROBLEMS: List[int] = [] # initial subproblem
+PASSWORD: str = "" # TUM password
+PROBLEM: int = 5 # Your problem
+SUBPROBLEMS: List[int] = [5, 6, 7] # initial subproblem
 
 class Correction():
     def __init__(self, username: str = USERNAME, 
@@ -36,24 +36,28 @@ class Correction():
         self.problem = problem
         self.subproblem = subproblems[0]
         self.subproblem_list = subproblems
-     
+        
         self.exercise_position = None
+       
 
-        url: str = "https://2022ss-in-i2dl.hq.tumexam.de/exam/1/correction/"
+        self.url: str = "https://2022ss-in-i2dl.hq.tumexam.de/exam/1/correction/"
         self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-        self.driver.get(url)
+        self.driver.get(self.url)
         
     def start(self):
         
         self.login()
+        time.sleep(3)
+        self.search_problem()
         command = input("Type in 'start' to start your correction when you have selected your exams which you want to correct.")
         if command == "start":
+           
             self.correct()
     def search_problem(self): 
-        element = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, '//input[@name="search-problem"]')))
+        element = WebDriverWait(self.driver, 100).until(EC.presence_of_element_located((By.XPATH, '//input[@name="search-problem"]')))
         element.send_keys(self.problem) 
-        element = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, '//input[@name="search-subproblem"]')))
-        element.send_keys(self.problem) 
+        element = WebDriverWait(self.driver, 50).until(EC.presence_of_element_located((By.XPATH, '//input[@name="search-subproblem"]')))
+        element.send_keys(self.subproblem) 
 
     def login(self):
         element = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, '//input[@id="username"]')))
@@ -79,20 +83,23 @@ class Correction():
                 alert.accept()
         except:
             pass
+       
             
     def give_score(self, score):
         try:
             
             element = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, f'//div[@id="p{self.problem}.{self.subproblem}.1c{score}"]')))
-            
             element.click()
         except:
+            print(traceback.format_exc())
             print("something went wrong, maybe the score is not valid")
 
     def save_exam(self, reset_subproblem = True):
+       
         element = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, f'//div[@id="save"]')))
         element.click()
         self.set_subproblem(self.subproblem_list[0])
+      
         self.scroll_to_exercise() 
 
     def comment( self, msg): 
@@ -116,16 +123,22 @@ class Correction():
         print(f"Set subproblem to {subproblem}")
 
     def next_page(self):
+        self.driver.execute_script("document.getElementById('pagination').style.display = 'block';")
         element = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, f'//div[@id="slideRight"]')))
         element.click()
 
     def previous_page(self):
+        self.driver.execute_script("document.getElementById('pagination').style.display = 'block';")
         element = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, f'//div[@id="slideLeft"]')))
         element.click()
+    
 
     def correct(self):
         while True:
+            
+
             self.scroll_to_exercise() 
+            self.driver.execute_script("document.getElementById('pagination').style.display = 'none';")
             command =input(':')
             if len(command) == 0:
                 print("No valid input")
