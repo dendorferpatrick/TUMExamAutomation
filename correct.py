@@ -23,7 +23,7 @@ from selenium.webdriver.support.select import Select
 USERNAME: str ="ge73vow" # TUM user name
 PASSWORD: str = "" # TUM password
 PROBLEM: int = 5 # Your problem
-SUBPROBLEMS: List[int] = [6, 7, 10] # initial subproblem
+SUBPROBLEMS: List[int] = [6, 7] # initial subproblem
 
 class Correction():
     def __init__(self, username: str = USERNAME, 
@@ -150,85 +150,91 @@ class Correction():
 
     def correct(self):
         while True:
-            self.move_to_subproblem_page()
+            try:
+                    
+                try:
+                    self.move_to_subproblem_page()
+                except: 
+                    pass
 
-            self.scroll_to_exercise() 
-            self.driver.execute_script("document.getElementById('pagination').style.display = 'none';")
-            command =input(':')
-            if len(command) == 0:
-                print("No valid input")
-            
-            save_score = re.findall("^[s][0-9]", command) + re.findall("\s[s][0-9]", command)
-            change_subproblem = re.findall("^[e][0-9]*\d", command) + re.findall("\s[e][0-9]*\d", command)
-            
-            next_score = re.findall("^[n][0-9]", command) + re.findall("\s[n][0-9]", command)
-            
-            
-            if "p0" in command:
-                self.previous_page()
-                command.replace("p0", "")
-            elif "p1" in command:
-                self.next_page() 
-                command.replace("p1", "")
-
+                self.scroll_to_exercise() 
+                self.driver.execute_script("document.getElementById('pagination').style.display = 'none';")
+                command =input(':')
+                if len(command) == 0:
+                    print("No valid input")
                 
+                save_score = re.findall("^[s][0-9]", command) + re.findall("\s[s][0-9]", command)
+                change_subproblem = re.findall("^[e][0-9]*\d", command) + re.findall("\s[e][0-9]*\d", command)
+                
+                next_score = re.findall("^[n][0-9]", command) + re.findall("\s[n][0-9]", command)
+                
+                
+                if "p0" in command:
+                    self.previous_page()
+                    command.replace("p0", "")
+                elif "p1" in command:
+                    self.next_page() 
+                    command.replace("p1", "")
 
-            if len(change_subproblem) > 0: 
-                self.set_subproblem(int(re.findall(r'\d+', change_subproblem[0])[0]))
-                command = command.replace(change_subproblem[0], "")
+                    
 
-          
-            if (len(command) > 0):
-                if (command[0]!= "m"): 
-                    try:
-                        message_index = command.index(' m ')
-                    except: message_index = False
+                if len(change_subproblem) > 0: 
+                    self.set_subproblem(int(re.findall(r'\d+', change_subproblem[0])[0]))
+                    command = command.replace(change_subproblem[0], "")
+
+            
+                if (len(command) > 0):
+                    if (command[0]!= "m"): 
+                        try:
+                            message_index = command.index(' m ')
+                        except: message_index = False
+                    else: message_index = None
                 else: message_index = None
-            else: message_index = None
-            
-         
-             
-          
-
-            try: 
-                score = int(command)
-            except: 
-                score = None
                 
-            if score: 
-                self.give_score(score)
-
-            if  (len(command) > 0) & (command == "s"):
-                self.save_exam()
             
-          
-            if (len(command) > 0) & (command == "p"):
-                self.set_exercise_position() 
-            
-            if message_index:  
-                self.comment(command[message_index + 3: ])
-                self.scroll_to_exercise()
-
-            if command == 'f':
-                self.skip()
-
-            if (len(command) > 0) & (command == "c"):
-                self.close()
-                break
-            if (len(command) > 0) & (command == "n"):
-                self.check_subproblem_page()
-
-            if len(save_score) > 0 :
-                self.give_score(int(save_score[0][-1]))
-                self.save_exam()
-
-            
-            
-            if len(next_score) > 0: 
-                self.give_score(int(next_score[0][-1]))
-                self.check_subproblem_page()
                 
+            
 
+                try: 
+                    score = int(command)
+                except: 
+                    score = None
+                    
+                if score: 
+                    self.give_score(score)
+
+                if  (len(command) > 0) & (command == "s"):
+                    self.save_exam()
+                
+            
+                if (len(command) > 0) & (command == "p"):
+                    self.set_exercise_position() 
+                
+                if message_index:  
+                    self.comment(command[message_index + 3: ])
+                    self.scroll_to_exercise()
+
+                if command == 'f':
+                    self.skip()
+
+                if (len(command) > 0) & (command == "c"):
+                    self.close()
+                    break
+                if (len(command) > 0) & (command == "n"):
+                    self.check_subproblem_page()
+
+                if len(save_score) > 0 :
+                    self.give_score(int(save_score[0][-1]))
+                    self.save_exam()
+
+                
+                
+                if len(next_score) > 0: 
+                    self.give_score(int(next_score[0][-1]))
+                    self.check_subproblem_page()
+                    
+            except:
+                pass
     def check_subproblem_page(self):
         index_subproblem  = self.subproblem_list.index(self.subproblem) 
         
