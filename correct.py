@@ -23,7 +23,7 @@ from selenium.webdriver.support.select import Select
 USERNAME: str ="ge73vow" # TUM user name
 PASSWORD: str = "" # TUM password
 PROBLEM: int = 5 # Your problem
-SUBPROBLEMS: List[int] = [6, 7] # initial subproblem
+SUBPROBLEMS: List[int] = [6, 7, 10] # initial subproblem
 
 class Correction():
     def __init__(self, username: str = USERNAME, 
@@ -159,7 +159,7 @@ class Correction():
                 print("No valid input")
             
             save_score = re.findall("^[s][0-9]", command) + re.findall("\s[s][0-9]", command)
-            change_subproblem = re.findall("^[e][0-9]", command) + re.findall("\s[e][0-9]", command)
+            change_subproblem = re.findall("^[e][0-9]*\d", command) + re.findall("\s[e][0-9]*\d", command)
             
             next_score = re.findall("^[n][0-9]", command) + re.findall("\s[n][0-9]", command)
             
@@ -174,7 +174,7 @@ class Correction():
                 
 
             if len(change_subproblem) > 0: 
-                self.set_subproblem(int(change_subproblem[0][-1]))
+                self.set_subproblem(int(re.findall(r'\d+', change_subproblem[0])[0]))
                 command = command.replace(change_subproblem[0], "")
 
           
@@ -242,6 +242,9 @@ class Correction():
             self.scroll_to_exercise()
 
     def move_to_subproblem_page(self):
+        checkboxes = self.driver.find_elements(By.XPATH, f'//div[@id="p{self.problem}.{self.subproblem}.1c1"]')
+        if len(checkboxes) == 0:
+            return
         while not self.driver.find_elements(By.XPATH, f'//div[@id="p{self.problem}.{self.subproblem}.1c1"]')[0].is_displayed():
             self.next_page()
             time.sleep(0.5)
