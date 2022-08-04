@@ -69,7 +69,7 @@ class Correction():
 
         element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, '//input[@name="search-erid"]')))
         element.send_keys("E") 
-        time.sleep(1)
+        time.sleep(2)
         self.driver.find_elements(By.XPATH, '//a[@class="js-filtered-link"]')[0].click()
         
         
@@ -117,9 +117,9 @@ class Correction():
         self.scroll_to_exercise() 
 
     def comment( self, msg): 
-        
-        # element = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, f'//textarea[@id="correction-form-problems-{self.subproblem}-comment"]')))
-        element = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, f'//textarea[@id="correction-form-problems-0-comment"]')))
+        index_subproblem = self.subproblem_list.index(self.subproblem) 
+        element = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, f'//textarea[@id="correction-form-problems-{index_subproblem}-comment"]')))
+
         element.clear()
         element.send_keys(msg)
         
