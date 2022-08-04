@@ -15,7 +15,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.alert import Alert
-
+from selenium.webdriver.support.select import Select
 
 
 
@@ -23,7 +23,7 @@ from selenium.webdriver.common.alert import Alert
 USERNAME: str ="ge73vow" # TUM user name
 PASSWORD: str = "" # TUM password
 PROBLEM: int = 5 # Your problem
-SUBPROBLEMS: List[int] = [5, 6, 7] # initial subproblem
+SUBPROBLEMS: List[int] = [6, 7] # initial subproblem
 
 class Correction():
     def __init__(self, username: str = USERNAME, 
@@ -51,14 +51,28 @@ class Correction():
         self.search_problem()
         command = input("Type in 'start' to start your correction when you have selected your exams which you want to correct.")
         if command == "start":
-           
             self.correct()
     def search_problem(self): 
         element = WebDriverWait(self.driver, 100).until(EC.presence_of_element_located((By.XPATH, '//input[@name="search-problem"]')))
         element.send_keys(self.problem) 
         element = WebDriverWait(self.driver, 50).until(EC.presence_of_element_located((By.XPATH, '//input[@name="search-subproblem"]')))
-        element.send_keys(self.subproblem) 
+        search_string = "|".join([str(nr) for nr in self.subproblem_list])
+        element.send_keys(search_string) 
+        time.sleep(0.5)
+        element = WebDriverWait(self.driver, 50).until(EC.presence_of_element_located((By.XPATH, '//select[@name="search-locked"]')))
+        
+        Select(element).select_by_visible_text("False")
+        time.sleep(0.5)
+        element = WebDriverWait(self.driver, 50).until(EC.presence_of_element_located((By.XPATH, '//select[@name="search-corrected"]')))
+        Select(element).select_by_visible_text("False")
+        
 
+        element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH, '//input[@name="search-erid"]')))
+        element.send_keys("E") 
+        time.sleep(1)
+        self.driver.find_elements(By.XPATH, '//a[@class="js-filtered-link"]')[0].click()
+        
+        
     def login(self):
         element = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, '//input[@id="username"]')))
         element.send_keys(self.username) 
@@ -104,7 +118,8 @@ class Correction():
 
     def comment( self, msg): 
         
-        element = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, f'//textarea[@id="correction-form-problems-{self.subproblem}-comment"]')))
+        # element = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, f'//textarea[@id="correction-form-problems-{self.subproblem}-comment"]')))
+        element = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, f'//textarea[@id="correction-form-problems-0-comment"]')))
         element.clear()
         element.send_keys(msg)
         
@@ -135,7 +150,7 @@ class Correction():
 
     def correct(self):
         while True:
-            
+            self.move_to_subproblem_page()
 
             self.scroll_to_exercise() 
             self.driver.execute_script("document.getElementById('pagination').style.display = 'none';")
@@ -221,15 +236,15 @@ class Correction():
             self.save_exam()
         else: 
             
-            self.set_subproblem(self.subproblem_list[index_subproblem + 1])
-            
-            
-            while not self.driver.find_elements(By.XPATH, f'//div[@id="p{self.problem}.{self.subproblem}.1c1"]')[0].is_displayed():
-                self.next_page()
-                time.sleep(1)
+            self.set_subproblem(self.subproblem_list[index_subproblem + 1])           
+            self.move_to_subproblem_page()
 
             self.scroll_to_exercise()
 
+    def move_to_subproblem_page(self):
+        while not self.driver.find_elements(By.XPATH, f'//div[@id="p{self.problem}.{self.subproblem}.1c1"]')[0].is_displayed():
+            self.next_page()
+            time.sleep(0.5)
 
 
 if __name__ == "__main__":
